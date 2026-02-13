@@ -132,20 +132,10 @@ for(let i=0;i<25;i++){
   <p style="margin-top:60px;color:#555;">No is not an option 😜</p>
 </div>
 
-<!-- PAGE 2 -->
-<div class="card hidden" id="pageScratch">
-  <h2>💚🩷🩵💙 Scratch to reveal 💚🩷🩵💙</h2>
-  <div class="scratch-container">
-    <img src="DSfam.png" id="hiddenImage">
-    <canvas id="scratch"></canvas>
-  </div><br>
-  <button class="yes hidden" id="continueBtn" onclick="openTyping()">Continue 💕</button>
-</div>
-
 <!-- PAGE 3 -->
 <div class="card hidden" id="page2">
   <h2>Hey handsome ❤️</h2>
-  <p>Type <b>i love you pondatti</b></p>
+  <p>Type <b>i love you di pondati</b></p>
   <input id="loveInput">
   <br><br>
   <button class="yes" onclick="checkText()">Submit 💕</button>
@@ -221,10 +211,18 @@ function scratch(e){
 }
 
 /* Love letter typing */
-const letter=`My love ❤️
-You are my forever.
-I love you endlessly 🫂💋`;
-
+const letterContent=My love, you’ve been my everything since the day we met.
+I fall in love with you again and again. 
+I wish to live my rest of the life with you Thangamey...
+Lets shine and grow together.
+Dharsh, You are the meaning of my life.
+This is our first valentines day....i am sooo exceited..hehehe😍🤩😍🤩
+i love you dharsh...🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂 
+Dharshan....ummmhhhhhaaaaaa💋💋💋💋💋💋💋💋💋💋💋💋 
+You are my forever, 
+  
+my love, 
+my Dharshan 💚💗💙;
 let i=0;
 function typeLetter(){
   if(i<letter.length){
@@ -234,7 +232,7 @@ function typeLetter(){
 }
 
 function checkText(){
-  if(loveInput.value.trim().toLowerCase()==="i love you pondatti"){
+  if(loveInput.value.trim().toLowerCase()==="i love you di pondati"){
     page2.classList.add("hidden");
     page3.classList.remove("hidden");
     typeLetter();
