@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Valentine Surprise 💙</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  font-family:'Segoe UI',sans-serif;
+  overflow:hidden;
+}
+
+/* Floating hearts (DO NOT BLOCK CLICKS) */
+.heart{
+  position:fixed;
+  font-size:20px;
+  animation:float 6s linear infinite;
+  opacity:0.7;
+  pointer-events:none;   /* ⭐ FIX */
+  z-index:1;
+}
+
+@keyframes float{
+  from{transform:translateY(100vh) scale(0.5);}
+  to{transform:translateY(-10vh) scale(1.2);}
+}
+
+/* Card */
+.card{
+  background:#e8f4ff;
+  width:90%;
+  max-width:420px;
+  padding:30px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 25px 50px rgba(0,0,0,0.25);
+  position:relative;
+  z-index:10;            /* ⭐ FIX */
+}
+
+.hidden{display:none;}
+
+h2{color:#0b5ed7;}
+
+/* Buttons */
+button{
+  padding:12px 26px;
+  border:none;
+  border-radius:25px;
+  font-size:16px;
+  cursor:pointer;
+  position:relative;
+  z-index:20;            /* ⭐ FIX */
+}
+
+.yes{background:#0b5ed7;color:white;}
+.no{
+  background:#ccc;
+  position:absolute;
+}
+
+/* Input + text */
+input{
+  width:80%;
+  padding:12px;
+  border-radius:20px;
+  border:2px solid #0b5ed7;
+  outline:none;
+  text-align:center;
+}
+
+.error{color:#d6336c;margin-top:10px;font-weight:600;}
+
+.letter{
+  font-style:italic;
+  line-height:1.7;
+  color:#03346e;
+  white-space:pre-wrap;
+}
+
+/* Scratch */
+.scratch-container{
+  position:relative;
+  width:300px;
+  height:300px;
+  margin:auto;
+}
+
+.scratch-container img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+#scratch{
+  position:absolute;
+  top:0;
+  left:0;
+  border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEARTS -->
+<script>
+for(let i=0;i<25;i++){
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="💗";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=4+Math.random()*4+"s";
+  h.style.fontSize=14+Math.random()*20+"px";
+  document.body.appendChild(h);
+}
+</script>
+
+<!-- PAGE 1 -->
+<div class="card" id="page1">
+  <h2>Dharshan, will you be my Valentine? 💖</h2><br><br>
+  <button class="yes" onclick="openScratch()">Yes</button>
+  <button class="no" id="noBtn">No</button>
+  <p style="margin-top:60px;color:#555;">No is not an option 😜</p>
+</div>
+
+<!-- PAGE 2 -->
+<div class="card hidden" id="pageScratch">
+  <h2>💚🩷🩵💙 Scratch to reveal 💚🩷🩵💙</h2>
+  <div class="scratch-container">
+    <img src="DSfam.png" id="hiddenImage">
+    <canvas id="scratch"></canvas>
+  </div><br>
+  <button class="yes hidden" id="continueBtn" onclick="openTyping()">Continue 💕</button>
+</div>
+
+<!-- PAGE 3 -->
+<div class="card hidden" id="page2">
+  <h2>Hey handsome ❤️</h2>
+  <p>Type <b>i love you pondatti</b></p>
+  <input id="loveInput">
+  <br><br>
+  <button class="yes" onclick="checkText()">Submit 💕</button>
+  <div class="error" id="error"></div>
+</div>
+
+<!-- PAGE 4 -->
+<div class="card hidden" id="page3">
+  <h2>💌 My Love Letter</h2>
+  <p class="letter" id="letterText"></p>
+</div>
+
+<script>
+/* No button dodge (inside card only) */
+const noBtn=document.getElementById("noBtn");
+const card=document.getElementById("page1");
+
+function moveNo(){
+  const maxX=card.offsetWidth-80;
+  const maxY=card.offsetHeight-80;
+  noBtn.style.left=Math.random()*maxX+"px";
+  noBtn.style.top=Math.random()*maxY+"px";
+}
+noBtn.addEventListener("mouseenter",moveNo);
+noBtn.addEventListener("touchstart",moveNo);
+
+/* Navigation */
+function openScratch(){
+  page1.classList.add("hidden");
+  pageScratch.classList.remove("hidden");
+  initScratch();
+}
+
+function openTyping(){
+  pageScratch.classList.add("hidden");
+  page2.classList.remove("hidden");
+}
+
+/* Scratch logic */
+const canvas=document.getElementById("scratch");
+const ctx=canvas.getContext("2d");
+const img=document.getElementById("hiddenImage");
+let scratching=false;
+
+function initScratch(){
+  img.onload=()=>{
+    canvas.width=img.offsetWidth;
+    canvas.height=img.offsetHeight;
+    ctx.globalCompositeOperation="source-over";
+    ctx.fillStyle="#4a90e2";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+  };
+}
+
+canvas.addEventListener("mousedown",()=>scratching=true);
+canvas.addEventListener("mouseup",()=>scratching=false);
+canvas.addEventListener("mousemove",scratch);
+
+canvas.addEventListener("touchstart",()=>scratching=true);
+canvas.addEventListener("touchend",()=>scratching=false);
+canvas.addEventListener("touchmove",scratch);
+
+function scratch(e){
+  if(!scratching) return;
+  const r=canvas.getBoundingClientRect();
+  const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
+  const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top;
+  ctx.globalCompositeOperation="destination-out";
+  ctx.beginPath();
+  ctx.arc(x,y,18,0,Math.PI*2);
+  ctx.fill();
+  continueBtn.classList.remove("hidden");
+}
+
+/* Love letter typing */
+const letter=`My love ❤️
+You are my forever.
+I love you endlessly 🫂💋`;
+
+let i=0;
+function typeLetter(){
+  if(i<letter.length){
+    letterText.innerHTML+=letter[i++];
+    setTimeout(typeLetter,40);
+  }
+}
+
+function checkText(){
+  if(loveInput.value.trim().toLowerCase()==="i love you pondatti"){
+    page2.classList.add("hidden");
+    page3.classList.remove("hidden");
+    typeLetter();
+  }else{
+    error.innerText="😜 Type it properly baby!";
+  }
+}
+</script>
+
+</body>
+</html>
